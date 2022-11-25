@@ -1,33 +1,33 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
+import requests
 import json
 
 driver=webdriver.Chrome()
 
 faqs=[]
-quest={}
+# quest={}
+# ans={}
 
 driver.get('https://larknorthgate.com/faqs/')
 
-# website=input("Enter Your Website: ")
-# if website != 0:
-#     driver.get(website)
-# else:
-#     print("sorry please again later")
-#     exit()
-
 content=driver.page_source
-soup=BeautifulSoup(content)
+soup=BeautifulSoup(content,'html.parser')
 
 for faq in soup.find_all('div',class_='collapse-items'):
-    question=faq.find('h2', class_='title')
-    answer=faq.find('p',class_='content')
-    question.append(question.text)
-    print(question.text)
-    answer.append(answer.text)
-    print(answer.text)
+    quest=faq.find('h2', class_='title')
+    ans=faq.find('p',class_='content')
+    faq_dic={
+        'question': quest.text,
+        'answer':ans.text
+    }
+    faqs.append(faq_dic)
+    # quest.append(quest.text)
+    # print(quest.text)
+    # ans.append(ans.text)
+    # print(ans.text)
 
+    with open ("schema.json","w") as f :
+        f.write(json.dumps(faqs))
 
 print(json.dumps(faqs))
-with open ("schema.json","w") as f :
-    f.write(json.dumps(faqs))
